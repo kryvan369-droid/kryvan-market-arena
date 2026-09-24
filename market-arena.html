@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07080b">
+  <title>Market Arena — KRYVAN</title>
+  <meta name="description" content="Build a virtual tokenized-stock portfolio and compete in the KRYVAN Market Arena.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2307080b'/%3E%3Cpath d='M17 12v40M47 12 22 32l25 20' fill='none' stroke='%235cf2d6' stroke-width='8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <style>
+    :root{--bg:#07080b;--panel:#0e1116;--panel2:#151922;--text:#f4f6f8;--muted:#9aa3ae;--line:#242a35;--mint:#5cf2d6;--red:#ff5b68;--gold:#f1c65b;--max:1240px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;font-size:16px;line-height:1.55;overflow-x:hidden}button,input{font:inherit}button{color:inherit}a{color:inherit;text-decoration:none}.mono{font-family:"DM Mono",monospace}.wrap{width:min(calc(100% - 40px),var(--max));margin:auto}
+    .noise{position:fixed;inset:0;pointer-events:none;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitchTiles'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+    nav{height:78px;border-bottom:1px solid var(--line);display:flex;align-items:center;position:relative;z-index:5;background:rgba(7,8,11,.88);backdrop-filter:blur(18px)}nav .wrap{display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:12px;font-weight:800;letter-spacing:-.03em;font-size:1.2rem}.mark{width:34px;height:34px;border:1px solid var(--mint);display:grid;place-items:center;border-radius:9px;color:var(--mint);font:700 19px Manrope}.navlinks{display:flex;gap:26px;align-items:center;color:var(--muted);font-size:.9rem}.navlinks a:hover,.navlinks .active{color:var(--text)}.navlinks .active{position:relative}.navlinks .active:after{content:"";position:absolute;left:0;right:0;bottom:-10px;height:1px;background:var(--mint)}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 20px;border-radius:10px;font-weight:700;border:1px solid var(--line);transition:.2s;background:var(--panel);cursor:pointer}.button.primary{background:var(--mint);color:#04100e;border-color:var(--mint)}.button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.06)}.button:disabled{cursor:not-allowed;opacity:.4}
+    .arena-head{padding:54px 0 34px;border-bottom:1px solid var(--line);background:radial-gradient(circle at 78% -40%,rgba(92,242,214,.12),transparent 45%)}.head-grid{display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end}.kicker{color:var(--mint);font:500 .76rem "DM Mono";letter-spacing:.12em;text-transform:uppercase}.arena-head h1{font-size:clamp(2.7rem,6vw,5.4rem);line-height:.95;letter-spacing:-.065em;margin:13px 0 17px}.arena-head p{color:#b5bec8;max-width:700px;font-size:1.05rem;margin:0}.arena-head .solana-context{max-width:770px;margin-top:15px;padding-left:14px;border-left:1px solid #31564f;color:#7f8b97;font-size:.87rem;line-height:1.6}.status-card{border:1px solid #31564f;border-radius:14px;padding:16px 18px;background:rgba(92,242,214,.055);min-width:240px}.status-card strong{display:flex;align-items:center;gap:9px;font-size:.85rem}.pulse{width:8px;height:8px;border-radius:50%;background:var(--mint);box-shadow:0 0 14px var(--mint)}.status-card span{display:block;color:#7f8b97;font-size:.76rem;margin-top:5px}
+    main{padding:34px 0 90px}.sim-banner{display:flex;align-items:center;justify-content:space-between;gap:20px;border:1px solid #3a3322;background:#17140d;border-radius:12px;padding:14px 17px;color:#d9c68b;margin-bottom:18px}.sim-banner strong{font:500 .75rem "DM Mono";letter-spacing:.09em}.sim-banner span{font-size:.82rem;color:#a6976f}
+    .panel{background:var(--panel);border:1px solid var(--line);border-radius:20px;overflow:hidden}.panel-head{display:flex;justify-content:space-between;align-items:start;gap:20px;padding:24px 26px;border-bottom:1px solid var(--line)}.panel-head h2{font-size:1.28rem;letter-spacing:-.025em;margin:0}.panel-head p{color:var(--muted);font-size:.88rem;margin:4px 0 0}.step{color:var(--mint);font:500 .72rem "DM Mono";letter-spacing:.1em}
+    .builder{display:grid;grid-template-columns:1fr 340px;gap:18px}.asset-panel{min-width:0}.asset-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:18px}.asset-card{border:1px solid var(--line);border-radius:15px;background:#0a0c10;padding:18px;transition:.2s}.asset-card.selected{border-color:#397168;background:linear-gradient(145deg,rgba(92,242,214,.075),#0a0c10 58%)}.asset-top{display:flex;align-items:center;justify-content:space-between;gap:14px}.asset-id{display:flex;align-items:center;gap:12px}.asset-logo{width:39px;height:39px;border-radius:11px;background:var(--panel2);border:1px solid #2c3340;display:grid;place-items:center;font:600 .72rem "DM Mono";color:var(--mint)}.asset-id strong{display:block;font-size:.96rem}.asset-id span{display:block;color:#77828e;font-size:.76rem}.pick{appearance:none;width:22px;height:22px;border:1px solid #3b4552;border-radius:6px;background:#11151b;display:grid;place-items:center;cursor:pointer}.pick:checked{background:var(--mint);border-color:var(--mint)}.pick:checked:after{content:"✓";color:#04100e;font-weight:900;font-size:.8rem}.allocation-row{display:grid;grid-template-columns:1fr 54px;gap:12px;align-items:center;margin-top:18px}.allocation-row input[type=range]{width:100%;accent-color:var(--mint)}.allocation-value{text-align:right;color:var(--mint);font:500 .8rem "DM Mono"}
+    .brief{padding:24px;display:flex;flex-direction:column;min-height:100%}.capital-label{color:#7f8994;font:500 .72rem "DM Mono";letter-spacing:.1em;text-transform:uppercase}.capital{font-size:2.5rem;font-weight:800;letter-spacing:-.055em;margin-top:5px}.brief hr{border:0;border-top:1px solid var(--line);width:100%;margin:22px 0}.allocation-line{display:flex;justify-content:space-between;gap:20px;margin:8px 0;color:var(--muted);font-size:.9rem}.allocation-line strong{color:var(--text)}.meter{height:7px;background:#242a35;border-radius:9px;overflow:hidden;margin:14px 0 7px}.meter-fill{height:100%;width:0;background:var(--mint);transition:.2s}.meter-fill.over{background:var(--red)}.allocation-status{display:flex;justify-content:space-between;color:#76818d;font-size:.78rem}.brief .button{width:100%;margin-top:auto}.validation{min-height:23px;color:var(--red);font-size:.78rem;margin:11px 0}.brief-note{color:#68737f;font-size:.75rem;margin:12px 0 0}
+    [hidden]{display:none!important}.live-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(330px,.75fr);gap:18px}.live-main{display:grid;gap:18px}.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden}.metric{background:var(--panel);padding:20px}.metric span{display:block;color:#7e8995;font:400 .7rem "DM Mono";letter-spacing:.08em;text-transform:uppercase}.metric strong{display:block;font-size:1.45rem;letter-spacing:-.04em;margin-top:6px}.positive{color:var(--mint)!important}.negative{color:var(--red)!important}
+    .chart-panel{padding:0}.chart-wrap{position:relative;height:320px;padding:18px 18px 12px}.chart-wrap canvas{width:100%;height:100%;display:block}.chart-stamp{position:absolute;top:21px;right:22px;color:#53606c;font:400 .66rem "DM Mono";letter-spacing:.08em}.holdings{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:16px 18px 20px}.holding{border:1px solid var(--line);border-radius:12px;padding:13px;background:#0a0c10}.holding span{display:block;color:#77828e;font-size:.72rem}.holding strong{font-size:.92rem}.holding em{display:block;font:normal 500 .72rem "DM Mono";margin-top:7px}
+    .leaderboard{height:100%}.board-meta{display:flex;align-items:center;gap:8px;color:#7f8994;font:400 .68rem "DM Mono";text-transform:uppercase;letter-spacing:.08em}.board-meta i{width:6px;height:6px;background:var(--mint);border-radius:50%;box-shadow:0 0 10px var(--mint)}.board{padding:10px}.board-row{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;padding:14px 12px;border-bottom:1px solid #1c222b}.board-row:last-child{border-bottom:0}.board-row.you{border:1px solid #35675f;border-radius:11px;background:rgba(92,242,214,.06);margin:5px 0}.rank{color:#68737e;font:500 .72rem "DM Mono"}.trader strong{display:block;font-size:.88rem}.trader span{color:#68737e;font-size:.7rem}.score{text-align:right}.score strong{display:block;font:500 .8rem "DM Mono"}.score span{display:block;color:#68737e;font-size:.68rem;margin-top:3px}.live-actions{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:16px}.round-note{color:#6f7a86;font-size:.78rem}.reset{border:0;background:none;color:var(--muted);text-decoration:underline;text-underline-offset:4px;cursor:pointer;padding:10px}.reset:hover{color:var(--text)}
+    .how{margin-top:58px;border-top:1px solid var(--line);padding-top:38px}.how h2{font-size:clamp(2rem,4vw,3.3rem);letter-spacing:-.05em;margin:8px 0 28px}.how-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.how article{border:1px solid var(--line);border-radius:15px;padding:23px;background:var(--panel)}.how article span{color:var(--mint);font:500 .72rem "DM Mono"}.how article h3{font-size:1.05rem;margin:26px 0 8px}.how article p{color:var(--muted);font-size:.88rem;margin:0}
+    .architecture{margin-top:58px;border-top:1px solid var(--line);padding-top:38px}.architecture h2,.beyond h2{font-size:clamp(2rem,4vw,3.3rem);letter-spacing:-.05em;margin:8px 0 28px}.architecture-flow{display:grid;grid-template-columns:minmax(120px,1fr) 28px minmax(120px,1fr) 28px minmax(120px,1fr) 28px minmax(120px,1fr) 28px minmax(120px,1fr) 28px minmax(120px,1fr);gap:7px;align-items:center}.flow-step{min-height:94px;border:1px solid var(--line);border-radius:14px;background:var(--panel);display:grid;place-items:center;padding:16px;text-align:center;color:#dce2e7;font:500 .75rem "DM Mono";letter-spacing:.075em;text-transform:uppercase}.flow-step.engine{border-color:#35675f;background:rgba(92,242,214,.06);color:var(--mint)}.flow-arrow{display:grid;place-items:center;color:#52616c;font:500 1.05rem "DM Mono"}.flow-arrow:before{content:"→"}.architecture-note{max-width:860px;color:var(--muted);font-size:.92rem;margin:25px 0 0;padding-left:15px;border-left:1px solid #31564f}
+    .beyond{margin-top:58px;border:1px solid #28544d;border-radius:20px;padding:42px;background:linear-gradient(135deg,#0b2522 0%,#0e1116 62%,#10141c 100%)}.beyond-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:50px;align-items:end}.beyond-copy p{color:#aab4bf;max-width:670px;margin:0}.vision-statement{font-size:clamp(1.5rem,3vw,2.55rem);font-weight:800;line-height:1.17;letter-spacing:-.04em;text-align:right}.vision-statement span{display:block}.vision-statement span:last-child{color:var(--mint)}
+    footer{border-top:1px solid var(--line);padding:30px 0 46px;color:#7f8994}.foot{display:flex;justify-content:space-between;gap:20px}.footlinks{display:flex;gap:22px;flex-wrap:wrap}
+    @media(max-width:980px){.builder,.live-layout{grid-template-columns:1fr}.brief{min-height:360px}.leaderboard{min-height:480px}.architecture-flow{grid-template-columns:1fr}.flow-step{min-height:70px}.flow-arrow:before{content:"↓"}.beyond-grid{grid-template-columns:1fr;gap:30px}.vision-statement{text-align:left}}
+    @media(max-width:780px){.navlinks a:not(.arena-nav){display:none}.navlinks{gap:10px}.arena-nav{display:inline-flex;min-height:40px;padding:0 13px;border:1px solid var(--line);border-radius:9px;align-items:center;color:var(--text)}.head-grid{grid-template-columns:1fr}.status-card{max-width:320px}.metrics{grid-template-columns:repeat(2,1fr)}.asset-grid{grid-template-columns:1fr}.holdings,.how-grid{grid-template-columns:1fr}.sim-banner{align-items:flex-start;flex-direction:column}.arena-head{padding-top:42px}}
+    @media(max-width:520px){.wrap{width:min(calc(100% - 28px),var(--max))}nav{height:68px}.brand{font-size:1.05rem}.mark{width:31px;height:31px}.arena-nav{font-size:.78rem!important;padding:0 10px!important}.arena-head h1{font-size:3rem}.panel-head{padding:20px;flex-direction:column}.asset-grid{padding:12px}.brief{padding:20px}.metric{padding:16px 13px}.metric strong{font-size:1.15rem}.chart-wrap{height:260px;padding:12px}.holdings{padding:12px}.foot{flex-direction:column}.live-actions{align-items:flex-start;flex-direction:column}.beyond{padding:28px}.architecture h2,.beyond h2{font-size:2rem}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.button,.asset-card,.meter-fill{transition:none}}
+  </style>
+</head>
+<body>
+  <div class="noise" aria-hidden="true"></div>
+  <nav>
+    <div class="wrap">
+      <a class="brand" href="index.html" aria-label="Kryvan home"><span class="mark">K</span>KRYVAN</a>
+      <div class="navlinks"><a href="index.html">Home</a><a href="index.html#network">Ecosystem</a><a href="index.html#roadmap">Roadmap</a><a class="active arena-nav" href="market-arena.html">Market Arena</a><a href="https://x.com/Kryvan369" target="_blank" rel="noopener">@Kryvan369 ↗</a></div>
+    </div>
+  </nav>
+
+  <header class="arena-head">
+    <div class="wrap head-grid">
+      <div>
+        <div class="kicker">KRYVAN EXPERIENCE</div>
+        <h1>MARKET<br>ARENA</h1>
+        <p>Construct a virtual tokenized-stock portfolio, enter the round and see how your allocation performs against the field.</p>
+        <p class="solana-context">Built for Solana's tokenized-asset ecosystem. Market Arena explores how tokenized stocks can become competitive, social experiences rather than assets users simply hold or trade.</p>
+      </div>
+      <div class="status-card"><strong><i class="pulse"></i> MARKET ARENA</strong><span>Virtual capital · simulated markets · competitive experience</span></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="sim-banner" role="note"><strong>SIMULATED PERFORMANCE</strong><span>Market Arena currently uses simulated market data, virtual capital and simulated rankings. No real funds or securities are used.</span></div>
+
+      <section id="builder" class="builder" aria-label="Portfolio builder">
+        <div class="panel asset-panel">
+          <div class="panel-head"><div><h2>Select your market</h2><p>Choose tokenized-stock simulations and set a complete allocation.</p></div><span class="step">01 / BUILD</span></div>
+          <div id="assetGrid" class="asset-grid"></div>
+        </div>
+        <aside class="panel brief">
+          <span class="capital-label">Virtual starting capital</span>
+          <div class="capital">$100,000</div>
+          <hr>
+          <div class="allocation-line"><span>Assets selected</span><strong id="selectedCount">0</strong></div>
+          <div class="allocation-line"><span>Capital allocated</span><strong id="allocatedCapital">$0</strong></div>
+          <div class="meter" aria-hidden="true"><div id="meterFill" class="meter-fill"></div></div>
+          <div class="allocation-status"><span>Allocation</span><strong id="allocationTotal">0%</strong></div>
+          <div id="validation" class="validation" aria-live="polite"></div>
+          <button id="enterButton" class="button primary" type="button" disabled>Enter Market Arena →</button>
+          <p class="brief-note">Entry uses virtual capital and creates no financial position.</p>
+        </aside>
+      </section>
+
+      <section id="liveArena" hidden aria-label="Live simulated arena">
+        <div class="live-layout">
+          <div class="live-main">
+            <div class="metrics">
+              <div class="metric"><span>Portfolio value</span><strong id="portfolioValue">$100,000</strong></div>
+              <div class="metric"><span>Round return</span><strong id="portfolioReturn">+0.00%</strong></div>
+              <div class="metric"><span>Your rank</span><strong id="yourRank">—</strong></div>
+              <div class="metric"><span>Round clock</span><strong id="roundClock" class="mono">05:00</strong></div>
+            </div>
+            <div class="panel chart-panel">
+              <div class="panel-head"><div><h2>Portfolio performance</h2><p>Virtual value across this simulated Arena round.</p></div><span class="step">02 / COMPETE</span></div>
+              <div class="chart-wrap"><canvas id="performanceChart" aria-label="Simulated portfolio performance chart"></canvas><span class="chart-stamp">SIMULATED MARKET FEED</span></div>
+              <div id="holdings" class="holdings"></div>
+            </div>
+          </div>
+          <aside class="panel leaderboard">
+            <div class="panel-head"><div><h2>Leaderboard</h2><p>Ranked by simulated round return.</p></div><span class="board-meta"><i></i> Live style</span></div>
+            <div id="board" class="board" aria-live="polite"></div>
+          </aside>
+        </div>
+        <div class="live-actions"><span class="round-note">Simulated market prices update throughout each Arena round.</span><button id="resetButton" class="reset" type="button">Build a new portfolio</button></div>
+      </section>
+
+      <section class="how">
+        <div class="kicker">Arena flow</div>
+        <h2>Build. Enter. Compete.</h2>
+        <div class="how-grid">
+          <article><span>01</span><h3>Choose the market</h3><p>Choose from the available tokenized-stock simulations and allocate your virtual capital.</p></article>
+          <article><span>02</span><h3>Enter the Arena</h3><p>Your portfolio joins a timed simulation. No wallet connection or real funds are involved.</p></article>
+          <article><span>03</span><h3>Climb the board</h3><p>Performance updates move every competitor through a live-style ranking experience.</p></article>
+        </div>
+      </section>
+
+      <section class="architecture" aria-labelledby="architecture-title">
+        <div class="kicker">Experience architecture</div>
+        <h2 id="architecture-title">HOW MARKET ARENA WORKS</h2>
+        <div class="architecture-flow" aria-label="Tokenized Assets to Results">
+          <div class="flow-step">Tokenized Assets</div><div class="flow-arrow" aria-hidden="true"></div>
+          <div class="flow-step">Portfolio Selection</div><div class="flow-arrow" aria-hidden="true"></div>
+          <div class="flow-step engine">Arena Engine</div><div class="flow-arrow" aria-hidden="true"></div>
+          <div class="flow-step">Performance Ranking</div><div class="flow-arrow" aria-hidden="true"></div>
+          <div class="flow-step">Leaderboard</div><div class="flow-arrow" aria-hidden="true"></div>
+          <div class="flow-step">Results</div>
+        </div>
+        <p class="architecture-note">Market Arena currently uses simulated market movement while the architecture is designed to support live tokenized-asset data and Solana wallet infrastructure as the experience develops.</p>
+      </section>
+
+      <section class="beyond" aria-labelledby="beyond-title">
+        <div class="beyond-grid">
+          <div class="beyond-copy">
+            <div class="kicker">Wider KRYVAN vision</div>
+            <h2 id="beyond-title">BEYOND MARKET ARENA</h2>
+            <p>Market Arena is one Arena inside the wider KRYVAN ecosystem. KRYVAN is designed around a simple idea: different competitive experiences can share one connected economy powered by KRVN.</p>
+          </div>
+          <div class="vision-statement" aria-label="One ecosystem. Multiple experiences. One connected economy.">
+            <span>ONE ECOSYSTEM.</span>
+            <span>MULTIPLE EXPERIENCES.</span>
+            <span>ONE CONNECTED ECONOMY.</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer><div class="wrap foot"><span>© 2026 Kryvan · Market Arena</span><div class="footlinks"><a href="index.html">Kryvan home</a><a href="index.html#roadmap">Roadmap</a><a href="https://x.com/Kryvan369" target="_blank" rel="noopener">X · @Kryvan369 ↗</a></div></div></footer>
+
+  <script>
+    const STARTING_CAPITAL = 100000;
+    const assets = [
+      {symbol:"NVDAx",name:"NVIDIA",allocation:40,selected:true,vol:0.0018},
+      {symbol:"TSLAx",name:"Tesla",allocation:30,selected:true,vol:0.0022},
+      {symbol:"SPYx",name:"S&P 500",allocation:30,selected:true,vol:0.0009},
+      {symbol:"AAPLx",name:"Apple",allocation:0,selected:false,vol:0.0012},
+      {symbol:"COINx",name:"Coinbase",allocation:0,selected:false,vol:0.0025},
+      {symbol:"GOOGLx",name:"Alphabet",allocation:0,selected:false,vol:0.0011}
+    ];
+    const rivals = [
+      {name:"Vector7",tag:"Momentum",ret:0.38},
+      {name:"Northstar",tag:"Balanced",ret:0.19},
+      {name:"AlphaMiner",tag:"High beta",ret:-0.08},
+      {name:"Solstice",tag:"Index mix",ret:0.11},
+      {name:"KryvScout",tag:"Contrarian",ret:-0.21}
+    ];
+    let timer=null, elapsed=0, remaining=300, portfolioValue=STARTING_CAPITAL, history=[STARTING_CAPITAL], activeAssets=[];
+    const $=id=>document.getElementById(id);
+    const money=value=>new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(value);
+    const signed=value=>(value>=0?"+":"")+value.toFixed(2)+"%";
+
+    function renderAssets(){
+      $("assetGrid").innerHTML=assets.map((asset,index)=>`
+        <article class="asset-card ${asset.selected?"selected":""}">
+          <div class="asset-top">
+            <label class="asset-id" for="pick-${index}"><span class="asset-logo">${asset.symbol.slice(0,2)}</span><span><strong>${asset.symbol}</strong><span>${asset.name} · simulated</span></span></label>
+            <input id="pick-${index}" class="pick" type="checkbox" ${asset.selected?"checked":""} aria-label="Select ${asset.symbol}" data-index="${index}">
+          </div>
+          <div class="allocation-row">
+            <input type="range" min="0" max="100" step="5" value="${asset.allocation}" ${asset.selected?"":"disabled"} aria-label="${asset.symbol} allocation" data-range="${index}">
+            <span class="allocation-value">${asset.allocation}%</span>
+          </div>
+        </article>`).join("");
+      document.querySelectorAll(".pick").forEach(input=>input.addEventListener("change",event=>{
+        const asset=assets[Number(event.target.dataset.index)];
+        asset.selected=event.target.checked;
+        if(!asset.selected) asset.allocation=0;
+        else if(asset.allocation===0) asset.allocation=10;
+        renderAssets(); updateSummary();
+      }));
+      document.querySelectorAll("[data-range]").forEach(input=>input.addEventListener("input",event=>{
+        const asset=assets[Number(event.target.dataset.range)];
+        asset.allocation=Number(event.target.value);
+        event.target.nextElementSibling.textContent=asset.allocation+"%";
+        updateSummary();
+      }));
+    }
+
+    function updateSummary(){
+      const selected=assets.filter(a=>a.selected);
+      const total=selected.reduce((sum,a)=>sum+a.allocation,0);
+      $("selectedCount").textContent=selected.length;
+      $("allocatedCapital").textContent=money(STARTING_CAPITAL*total/100);
+      $("allocationTotal").textContent=total+"%";
+      $("meterFill").style.width=Math.min(total,100)+"%";
+      $("meterFill").classList.toggle("over",total>100);
+      const valid=selected.length>=2&&total===100&&selected.every(a=>a.allocation>0);
+      $("enterButton").disabled=!valid;
+      $("validation").textContent=selected.length<2?"Select at least two assets.":total<100?`Allocate ${100-total}% more.`:total>100?`Reduce allocation by ${total-100}%.`:"";
+    }
+
+    function enterArena(){
+      activeAssets=assets.filter(a=>a.selected).map(a=>({...a,ret:0}));
+      portfolioValue=STARTING_CAPITAL; history=[STARTING_CAPITAL]; elapsed=0; remaining=300;
+      $("builder").hidden=true; $("liveArena").hidden=false;
+      updateLive();
+      drawChart();
+      clearInterval(timer);
+      timer=setInterval(tick,1400);
+      window.scrollTo({top:$("liveArena").offsetTop-96,behavior:"smooth"});
+    }
+
+    function tick(){
+      elapsed++; remaining=Math.max(0,remaining-3);
+      let weightedReturn=0;
+      activeAssets.forEach(asset=>{
+        const move=(Math.random()-.485)*asset.vol*100;
+        asset.ret+=move;
+        weightedReturn+=asset.ret*(asset.allocation/100);
+      });
+      portfolioValue=STARTING_CAPITAL*(1+weightedReturn/100);
+      history.push(portfolioValue);
+      if(history.length>90) history.shift();
+      rivals.forEach(rival=>rival.ret+=(Math.random()-.5)*.16);
+      updateLive(); drawChart();
+      if(remaining===0) clearInterval(timer);
+    }
+
+    function updateLive(){
+      const portfolioReturn=(portfolioValue/STARTING_CAPITAL-1)*100;
+      $("portfolioValue").textContent=money(portfolioValue);
+      $("portfolioReturn").textContent=signed(portfolioReturn);
+      $("portfolioReturn").className=portfolioReturn>=0?"positive":"negative";
+      const minutes=Math.floor(remaining/60).toString().padStart(2,"0");
+      const seconds=(remaining%60).toString().padStart(2,"0");
+      $("roundClock").textContent=minutes+":"+seconds;
+      $("holdings").innerHTML=activeAssets.map(asset=>`<div class="holding"><span>${asset.symbol} · ${asset.allocation}%</span><strong>${money(STARTING_CAPITAL*asset.allocation/100)}</strong><em class="${asset.ret>=0?"positive":"negative"}">${signed(asset.ret)}</em></div>`).join("");
+      const standings=[...rivals.map(r=>({...r,you:false})),{name:"YOU",tag:"KRYVAN entrant",ret:portfolioReturn,you:true}].sort((a,b)=>b.ret-a.ret);
+      const rank=standings.findIndex(row=>row.you)+1;
+      $("yourRank").textContent="#"+rank+" / "+standings.length;
+      $("board").innerHTML=standings.map((row,index)=>`<div class="board-row ${row.you?"you":""}"><span class="rank">#${index+1}</span><span class="trader"><strong>${row.name}</strong><span>${row.tag}</span></span><span class="score"><strong class="${row.ret>=0?"positive":"negative"}">${signed(row.ret)}</strong><span>SIM RETURN</span></span></div>`).join("");
+    }
+
+    function drawChart(){
+      const canvas=$("performanceChart");
+      const rect=canvas.getBoundingClientRect();
+      const dpr=Math.min(window.devicePixelRatio||1,2);
+      canvas.width=Math.max(1,Math.floor(rect.width*dpr));
+      canvas.height=Math.max(1,Math.floor(rect.height*dpr));
+      const ctx=canvas.getContext("2d");
+      ctx.scale(dpr,dpr);
+      const width=rect.width,height=rect.height,pad=26;
+      ctx.clearRect(0,0,width,height);
+      ctx.strokeStyle="#202733";ctx.lineWidth=1;
+      for(let i=0;i<5;i++){const y=pad+(height-pad*2)*i/4;ctx.beginPath();ctx.moveTo(pad,y);ctx.lineTo(width-pad,y);ctx.stroke();}
+      let min=Math.min(...history),max=Math.max(...history);
+      const spread=Math.max(max-min,120);min-=spread*.35;max+=spread*.35;
+      const points=history.map((value,index)=>({x:pad+(width-pad*2)*(index/Math.max(history.length-1,1)),y:height-pad-(value-min)/(max-min)*(height-pad*2)}));
+      const gradient=ctx.createLinearGradient(0,pad,0,height-pad);gradient.addColorStop(0,"rgba(92,242,214,.24)");gradient.addColorStop(1,"rgba(92,242,214,0)");
+      ctx.beginPath();points.forEach((point,index)=>index?ctx.lineTo(point.x,point.y):ctx.moveTo(point.x,point.y));ctx.lineTo(points.at(-1).x,height-pad);ctx.lineTo(points[0].x,height-pad);ctx.closePath();ctx.fillStyle=gradient;ctx.fill();
+      ctx.beginPath();points.forEach((point,index)=>index?ctx.lineTo(point.x,point.y):ctx.moveTo(point.x,point.y));ctx.strokeStyle="#5cf2d6";ctx.lineWidth=2;ctx.stroke();
+      const last=points.at(-1);ctx.beginPath();ctx.arc(last.x,last.y,4,0,Math.PI*2);ctx.fillStyle="#5cf2d6";ctx.fill();
+    }
+
+    function resetArena(){
+      clearInterval(timer);timer=null;
+      $("liveArena").hidden=true;$("builder").hidden=false;
+      window.scrollTo({top:$("builder").offsetTop-96,behavior:"smooth"});
+    }
+
+    $("enterButton").addEventListener("click",enterArena);
+    $("resetButton").addEventListener("click",resetArena);
+    window.addEventListener("resize",()=>{if(!$("liveArena").hidden)drawChart()});
+    renderAssets();updateSummary();
+  </script>
+</body>
+</html>
